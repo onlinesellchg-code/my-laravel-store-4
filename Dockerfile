@@ -24,19 +24,22 @@ RUN mkdir -p \
     public/uploads
 
 # Create the runtime .env here so deployment does not depend on GitHub uploading hidden files.
-RUN printf '%s\\n' \
-    'APP_NAME="فروشگاه من"' \
-    'APP_ENV=production' \
-    'APP_KEY=' \
-    'APP_DEBUG=false' \
-    'APP_URL=https://my-laravel-store.onrender.com' \
-    'LOG_CHANNEL=stderr' \
-    'LOG_LEVEL=error' \
-    'DB_CONNECTION=pgsql' \
-    'SESSION_DRIVER=file' \
-    'CACHE_STORE=file' \
-    'QUEUE_CONNECTION=sync' \
-    > .env \
+RUN cat > .env <<'EOF'
+APP_NAME="My Laravel Store"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://my-laravel-store.onrender.com
+LOG_CHANNEL=stderr
+LOG_LEVEL=error
+DB_CONNECTION=pgsql
+DB_URL=
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+FILESYSTEM_DISK=local
+EOF
     && composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts \
     && php artisan key:generate --force \
     && chown -R www-data:www-data storage bootstrap/cache public/uploads \
